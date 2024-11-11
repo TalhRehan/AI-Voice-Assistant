@@ -5,20 +5,16 @@ from difflib import SequenceMatcher
 
 app = Flask(__name__)
 
-# Set your Google API key
 os.environ["GOOGLE_API_KEY"] = "AIzaSyD2_gFu99yE0VvnJ79kxmK-zhGrTrCzRIM"
 genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
 model = genai.GenerativeModel("models/gemini-1.5-pro")
 
-# Global variables to store conversation history and context
-conversation_history = []
 
-# Voice assistance function with enhanced topic management
+conversation_history = []
 def voice_assistance(user_input):
     global conversation_history
 
-    # Improved prompt with focus on concise and direct answers
     prompt = f"""
     You are an AI assistant in an engaging conversation with a user. The user just asked the following question:
     '{user_input}'
@@ -27,7 +23,6 @@ def voice_assistance(user_input):
 
     response = model.generate_content(prompt).text
 
-    # Update conversation history
     conversation_history.append({
         'user': user_input,
         'ai': response
@@ -36,19 +31,19 @@ def voice_assistance(user_input):
     return response
 
 
-# Route to render the main page
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
 
-# Route to handle voice input and return model response with conversation history
+
 @app.route('/process_voice', methods=['POST'])
 def process_voice():
     user_input = request.json.get("user_input")
     response = voice_assistance(user_input)
 
-    # Return the updated conversation history
+
     return jsonify({'response': response, 'conversation_history': conversation_history})
 
 
